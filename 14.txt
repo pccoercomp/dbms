@@ -1,0 +1,36 @@
+// Create the "Teachers" collection and insert sample documents
+db.createCollection("Teachers")
+db.Teachers.insertMany([
+  { Tname: "Teacher1", dno: 1, Experience: 5, Salary: 12000, Date_of_Joining: "2023-01-15" },
+  { Tname: "Teacher2", dno: 2, Experience: 7, Salary: 9000, Date_of_Joining: "2022-11-20" }
+])
+
+// Create the "Department" collection and insert sample documents
+db.createCollection("Department")
+db.Department.insertMany([
+  { Dno: 1, Dname: "Math" },
+  { Dno: 2, Dname: "Science" }
+])
+
+// Create the "Students" collection and insert sample documents
+db.createCollection("Students")
+db.Students.insertMany([
+  { Sname: "Student1", Roll_No: 1, Class: "FE" },
+  { Sname: "xyz", Roll_No: 2, Class: "SE" },
+  { Sname: "Student3", Roll_No: 3, Class: "FE" }
+])
+
+// Find the information about all teachers of Dno=2 and having salary greater than or equal to 10,000/-
+db.Teachers.find({ dno: 2, Salary: { $gte: 10000 } })
+
+// Find the student information having Roll_no=2 or Sname='xyz'
+db.Students.find({ $or: [{ Roll_No: 2 }, { Sname: 'xyz' }] })
+
+// Update the student name whose Roll_No=5
+db.Students.updateOne({ Roll_No: 5 }, { $set: { Sname: "NewName" } })
+
+// Delete all students whose Class is 'FE'
+db.Students.deleteMany({ Class: "FE" })
+
+// Apply an index on the "Students" collection
+db.Students.createIndex({ Roll_No: 1 })

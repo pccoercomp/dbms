@@ -1,0 +1,33 @@
+var mapStatePopulation = function () {
+  emit(this.state, parseInt(this.population));
+};
+
+var reduceStatePopulation = function (key, values) {
+  return Array.sum(values);
+};
+
+db.city.mapReduce(mapStatePopulation, reduceStatePopulation, { out: "state_population" });
+
+db.state_population.find();
+var mapCityPopulation = function () {
+  emit(this.city, parseInt(this.population));
+};
+
+var reduceCityPopulation = function (key, values) {
+  return Array.sum(values);
+};
+
+db.city.mapReduce(mapCityPopulation, reduceCityPopulation, { out: "city_population" });
+
+db.city_population.find();
+var mapTypePopulation = function () {
+  emit(this.type, parseInt(this.population));
+};
+
+var reduceTypePopulation = function (key, values) {
+  return Array.sum(values);
+};
+
+db.city.mapReduce(mapTypePopulation, reduceTypePopulation, { out: "type_population" });
+
+db.type_population.find();

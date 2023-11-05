@@ -1,0 +1,26 @@
+db.createCollection("students")
+
+// Insert Some Documents
+db.students.insertMany([
+  { Rollno: 1, name: 'Navin', subject: 'DMSA', marks: 78 },
+  { Rollno: 2, name: 'Anusha', subject: 'OSD', marks: 75 },
+  { Rollno: 3, name: 'Ravi', subject: 'TOC', marks: 69 },
+  { Rollno: 4, name: 'Veena', subject: 'TOC', marks: 70 },
+  { Rollno: 5, name: 'Pravini', subject: 'OSD', marks: 80 },
+  { Rollno: 6, name: 'Reena', subject: 'DMSA', marks: 50 },
+  { Rollno: 7, name: 'Geeta', subject: 'CN', marks: 90 },
+  { Rollno: 8, name: 'Akash', subject: 'CN', marks: 85 }
+])
+// i. Display the name of the customer having the price between 250 and 450
+db.orderinfo.find({ price: { $gte: 250, $lte: 450 } }, { cust_name: 1, _id: 0 })
+
+// ii. Increment the price by 10 for cust_id: 123 and decrement the price by 5 for cust_id: 124
+db.orderinfo.update({ cust_id: 123 }, { $inc: { price: 10 } })
+db.orderinfo.update({ cust_id: 124 }, { $inc: { price: -5 } })
+
+// iii. Remove the "status" field from the orderinfo collection
+db.orderinfo.update({}, { $unset: { status: "" } }, { multi: true })
+
+// iv. Find the name of the customer whose status is either A or price is 250 or both
+db.orderinfo.find({ $or: [{ status: "A" }, { price: 250 }] }, { cust_name: 1, _id: 0 })
+

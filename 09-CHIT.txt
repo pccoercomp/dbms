@@ -1,0 +1,48 @@
+// Create the "orderinfo" collection
+db.createCollection("orderinfo")
+
+// Insert sample data into the "orderinfo" collection
+db.orderinfo.insertMany([
+  {
+    cust_id: 123,
+    cust_name: "abc",
+    status: "A",
+    price: 250
+  },
+  {
+    cust_id: 124,
+    cust_name: "xyz",
+    status: "A",
+    price: 500
+  },
+  {
+    cust_id: 125,
+    cust_name: "def",
+    status: "B",
+    price: 150
+  }
+])
+
+// Find the average price for each customer having status 'A'
+db.orderinfo.aggregate([
+  {
+    $match: { status: 'A' }
+  },
+  {
+    $group: {
+      _id: "$cust_id",
+      averagePrice: { $avg: "$price" }
+    }
+  }
+])
+
+// Display the status of the customers whose amount/price lies between 100 and 1000
+db.orderinfo.find({
+  price: { $gte: 100, $lte: 1000 }
+}, { status: 1 })
+
+// Display the customers' information without "_id"
+db.orderinfo.find({}, { _id: 0 })
+
+// Create a simple index on the "orderinfo" collection
+db.orderinfo.createIndex({ cust_id: 1 })

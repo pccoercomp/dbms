@@ -1,0 +1,62 @@
+-- Create a PLSQL stored function
+SET SERVEROUTPUT ON;
+CREATE OR REPLACE FUNCTION func_Grade(p_total_marks IN NUMBER) RETURN VARCHAR2 AS
+   v_class VARCHAR2(50);
+BEGIN
+   IF p_total_marks = 990 AND p_total_marks = 1500 THEN
+      v_class = 'Distinction';
+   ELSIF p_total_marks = 900 AND p_total_marks = 989 THEN
+      v_class = 'First Class';
+   ELSIF p_total_marks = 825 AND p_total_marks = 899 THEN
+      v_class = 'Higher Second Class';
+   ELSE
+      v_class = 'Not Classified';
+   END IF;
+
+   RETURN v_class;
+END;
+
+
+-- Create the Result table if it doesn't exist
+CREATE TABLE Result (
+    Roll NUMBER,
+    Name VARCHAR2(100),
+    Class VARCHAR2(50)
+);
+
+-- Sample data for the Stud_Marks table
+-- Create and insert data into the Stud_Marks table
+CREATE TABLE Stud_Marks (
+    Name VARCHAR2(100),
+    Total_Marks NUMBER
+);
+
+-- Insert sample data into the Stud_Marks table
+INSERT INTO Stud_Marks (Name, Total_Marks) VALUES ('John Doe', 1000);
+INSERT INTO Stud_Marks (Name, Total_Marks) VALUES ('Jane Smith', 980);
+
+-- PLSQL block to use the function and categorize students
+DECLARE
+   v_roll NUMBER = 1; -- Start with Roll number 1
+   v_name Stud_Marks.Name%TYPE;
+   v_total_marks Stud_Marks.Total_Marks%TYPE;
+   v_class VARCHAR2(50);
+BEGIN
+   -- Loop through the Stud_Marks table to categorize each student
+   FOR rec IN (SELECT Name, Total_Marks FROM Stud_Marks) LOOP
+      v_name = rec.Name;
+      v_total_marks = rec.Total_Marks;
+
+      -- Call the func_Grade function to categorize the student
+      v_class = func_Grade(v_total_marks);
+
+      -- Insert the result into the Result table
+      INSERT INTO Result (Roll, Name, Class)
+      VALUES (v_roll, v_name, v_class);
+
+      v_roll = v_roll + 1; -- Increment the Roll number
+   END LOOP;
+
+   COMMIT;
+END;
+

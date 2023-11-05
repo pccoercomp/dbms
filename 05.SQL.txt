@@ -1,0 +1,50 @@
+SET SERVEROUTPUT ON;
+-- Anonymous PL/SQL block to merge data and commit changes
+-- Create the N_RollCall table
+--CREATE TABLE N_RollCall (
+--    student_id NUMBER PRIMARY KEY,
+--    other_column VARCHAR2(100) -- Replace with actual column names
+--);
+--
+---- Create the O_RollCall table
+--CREATE TABLE O_RollCall (
+--    student_id NUMBER PRIMARY KEY,
+--    other_column VARCHAR2(100) -- Replace with actual column names
+--);
+--
+---- Insert sample data into the N_RollCall table for testing
+--INSERT INTO N_RollCall (student_id, other_column) VALUES (1, 'John Doe');
+--INSERT INTO N_RollCall (student_id, other_column) VALUES (2, 'Jane Smith');
+--INSERT INTO N_RollCall (student_id, other_column) VALUES (3, 'Alice Johnson');
+--
+---- Insert sample data into the O_RollCall table for testing
+--INSERT INTO O_RollCall (student_id, other_column) VALUES (2, 'Jane Smith'); -- This data already exists
+--INSERT INTO O_RollCall (student_id, other_column) VALUES (4, 'Bob Johnson');
+
+DECLARE
+   v_student_id N_RollCall.student_id%TYPE;
+   v_other_columns N_RollCall.other_column%TYPE; -- Replace with actual column names
+
+   CURSOR merge_cursor IS
+      SELECT student_id, other_column
+      FROM N_RollCall;
+
+BEGIN
+   FOR n_rec IN merge_cursor LOOP
+      BEGIN
+         SELECT student_id
+         INTO v_student_id
+         FROM O_RollCall
+         WHERE student_id = n_rec.student_id;
+
+      EXCEPTION
+         WHEN NO_DATA_FOUND THEN
+            INSERT INTO O_RollCall (student_id, other_column)
+            VALUES (n_rec.student_id, n_rec.other_column); -- Replace with actual column names
+      END;
+   END LOOP;
+
+   COMMIT;
+END;
+/
+
